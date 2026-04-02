@@ -13,17 +13,41 @@
                     <span>{{(page_size*(current_page-1)+scope.$index+1)|formatIndex1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="project.project_name" label="项目名称"></el-table-column>
-            <el-table-column prop="channel.name" label="合作渠道"></el-table-column>
-            <el-table-column  label="项目状态">
+            <el-table-column label="项目名称">
                 <template scope="scope">
-                    <span>{{tableData[scope.$index].project.project_status | formatStatus}}</span>
+                    <span>{{scope.row.project && scope.row.project.project_name || ''}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="project.project_line_time" label="项目上线时间"></el-table-column>
-            <el-table-column prop="project.project_down_time" label="项目终止时间"></el-table-column>
-            <el-table-column prop="project.project_approved_sum" label="项目批准额度"></el-table-column>
-            <el-table-column prop="project.project_available_credit" label="项目可用额度"></el-table-column>
+            <el-table-column label="合作渠道">
+                <template scope="scope">
+                    <span>{{scope.row.channel && scope.row.channel.name || ''}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="项目状态">
+                <template scope="scope">
+                    <span>{{scope.row.project && scope.row.project.project_status | formatStatus}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="项目上线时间">
+                <template scope="scope">
+                    <span>{{scope.row.project && scope.row.project.project_line_time || ''}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="项目终止时间">
+                <template scope="scope">
+                    <span>{{scope.row.project && scope.row.project.project_down_time || ''}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="项目批准额度">
+                <template scope="scope">
+                    <span>{{scope.row.project && scope.row.project.project_approved_sum || ''}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="项目可用额度">
+                <template scope="scope">
+                    <span>{{scope.row.project && scope.row.project.project_available_credit || ''}}</span>
+                </template>
+            </el-table-column>
           </el-table>
         <div class="block">
           <el-pagination
@@ -80,14 +104,16 @@
           this._getData(this.current_page,this.page_size);
         },
         handleRowChange(val) {
-            this.project_no=val.project.project_no;
+            if (val && val.project) {
+                this.project_no=val.project.project_no;
+            }
         },
         _getData(current_page,page_size){
           api.GetProjects({
             current_page,
             page_size,
             channel_name: this.$route.query.channel_name,
-            project_name: this.$route.query.project_title,
+            project_name: this.$route.query.project_name,
             project_status: this.$route.query.project_status
           })
             .then(res => {
