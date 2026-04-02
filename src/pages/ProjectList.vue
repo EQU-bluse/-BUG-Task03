@@ -17,7 +17,7 @@
             <el-table-column prop="channel.name" label="合作渠道"></el-table-column>
             <el-table-column  label="项目状态">
                 <template scope="scope">
-                    <span>{{tableData[scope.$index].project.project_status | formatStatus}}</span>
+                    <span>{{tableData[scope.$index] && tableData[scope.$index].project ? formatStatus(tableData[scope.$index].project.project_status) : ''}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="project.project_line_time" label="项目上线时间"></el-table-column>
@@ -45,7 +45,6 @@
 <script type="text/ecmascript-6">
   import api from 'fetch/api';
   import _ from 'lodash';
-  let self='';
   export default {
       data () {
           return{
@@ -80,14 +79,20 @@
           this._getData(this.current_page,this.page_size);
         },
         handleRowChange(val) {
-            this.project_no=val.project.project_no;
+            if (val && val.project) {
+                this.project_no=val.project.project_no;
+            }
+        },
+        formatStatus(value) {
+            if (!this.projectStatus || value == null) return '';
+            return _.result(_.find(this.projectStatus, { 'code_value': String(value)}), 'code_name') || '';
         },
         _getData(current_page,page_size){
           api.GetProjects({
             current_page,
             page_size,
             channel_name: this.$route.query.channel_name,
-            project_name: this.$route.query.project_title,
+            project_name: this.$route.query.project_name,
             project_status: this.$route.query.project_status
           })
             .then(res => {
@@ -107,13 +112,7 @@
         }
       },
       created(){
-         self=this;
          this._getData(this.current_page,this.page_size)
-      },
-      filters: {
-          formatStatus(value) {
-              return _.result(_.find(self.projectStatus, { 'code_value': value+''}), 'code_name');
-          }
       },
   }
 </script>
