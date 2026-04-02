@@ -3,6 +3,7 @@
  */
 module.exports = function (sequelize, DataTypes) {
     var t_quota = sequelize.define('t_quota', {
+            quotaId: {type: DataTypes.INTEGER(11), allowNull: true},
             approved_sum: {type: DataTypes.DECIMAL(16, 2), allowNull: true},
             available_credit: {type: DataTypes.DECIMAL(16, 2), allowNull: true},
             freezen_status: {type: DataTypes.INTEGER(4), allowNull: true},

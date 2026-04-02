@@ -83,7 +83,13 @@
             this.project_no=val.project.project_no;
         },
         _getData(current_page,page_size){
-          api.GetProjects({current_page,page_size,...this.$route.query})
+          api.GetProjects({
+            current_page,
+            page_size,
+            channel_name: this.$route.query.channel_name,
+            project_name: this.$route.query.project_title,
+            project_status: this.$route.query.project_status
+          })
             .then(res => {
               if(res.code=='01'){
                 this.tableData=res.result.rows;

@@ -47,7 +47,7 @@
               label="额度调整"
               >
               <template scope="scope">
-                <a :href="'limitDetail/'+tableData[scope.$index].company_id">管理 </a>
+                <router-link :to="'/limitDetail/' + scope.row.company_id">管理</router-link>
               </template>
             </el-table-column>
 

@@ -67,7 +67,7 @@
         }
       },
       created(){
-        api.GetLimitDetail({id:this.$route.params.id})
+        api.GetLimitDetail({ id: this.$route.params.id })
           .then(res => {
             if(res.code=='01'){
               this.tquota=res.result;
