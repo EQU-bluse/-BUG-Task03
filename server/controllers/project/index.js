@@ -24,7 +24,7 @@ module.exports = {
             model: projectSequelize,
             as: 'project',
             where: {
-              project_name: {$like: `%${param.project_name}%`}
+              project_name: {$like: `%${req.body.project_name != null ? req.body.project_name : ''}%`}
             }
           },
           {
@@ -69,7 +69,7 @@ module.exports = {
       channel=channel||{};
       var project = await _model.create(projectSequelize, param);
       var channelProject = await _model.create(channelProjectSequelize, {
-        channel_id: channel.channel_no,
+        channel_id: channel.id != null ? String(channel.id) : '',
         org_cd: channel.org_cd,
         project_id: project.project_no
       })
@@ -115,7 +115,8 @@ module.exports = {
         project_available_credit: req.body.project_available_credit,
         project_name: req.body.project_name,
         project_status: req.body.project_status,
-        project_down_time: req.body.project_down_time.substr(0,10)
+        project_down_time: req.body.project_down_time.substr(0,10),
+        project_no: req.body.channel
       }
       var channelData = await _model.findOne(channelSequelize, {where: {channel_no: param.channel_no}});
       var channelProjectData = await _model.update(channelProjectSequelize, {

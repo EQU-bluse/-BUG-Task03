@@ -28,8 +28,9 @@ module.exports = {
           required: true,
           as: 'vice',
           attributes: ['id', 'cst_credit_level'],
+          where: {}
         }],
-        attributes: ['id', 'company_id', 'available_credit', 'freezen_status',],
+        attributes: ['id', 'quotaId', 'company_id', 'available_credit', 'freezen_status'],
         limit: [(current - 1) * page_size, +page_size],
         where: {}
       }
@@ -42,14 +43,18 @@ module.exports = {
       //查询条件赋值
       req.body.credit_code && (con.where.company_id = req.body.credit_code);
       req.body.limit_status && (con.where.freezen_status = req.body.limit_status);
+      if (req.body.channel) {
+        con.where.org_channel_ref = req.body.channel;
+      }
       if (req.body.cst_full_name) {
         con.include[0].where.cst_full_name = {$like: '%' + req.body.cst_full_name + '%'}
       }
       var result = await _model.findAndCountAll(limitSequelize, con);
       var status = await _model.findAll(codeSequelize, codeCondition);
       result.rows=result.rows.map((item)=>{
-        item.freezen_status=_.result(_.find(status, { 'code_value': item.freezen_status+''}), 'code_name');
-        return item;
+        var plain = item.get ? item.get({plain: true}) : item;
+        plain.freezen_status=_.result(_.find(status, { 'code_value': plain.freezen_status+''}), 'code_name');
+        return plain;
       })
       body.result=result;
     }catch (e) {

@@ -96,7 +96,7 @@ export default {
      * 额度详情
      */
     GetLimitDetail(params) {
-      return fetch('/limit_detail', params)
+      return fetch('/limit_detail', { quotaRef: params.id })
     },
     /**
      * 项目列表
