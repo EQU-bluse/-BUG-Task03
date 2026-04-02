@@ -9,15 +9,15 @@
       <el-tab-pane label="项目查询" name="first">
         <el-table :data="tableData" border stripe style="width: 100%" highlight-current-row empty-text="数据空空" height="400" @current-change="handleRowChange">
             <el-table-column label="序号" width="65">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{(page_size*(current_page-1)+scope.$index+1)|formatIndex1}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="project.project_name" label="项目名称"></el-table-column>
             <el-table-column prop="channel.name" label="合作渠道"></el-table-column>
             <el-table-column  label="项目状态">
-                <template scope="scope">
-                    <span>{{tableData[scope.$index].project.project_status | formatStatus}}</span>
+                <template slot-scope="scope">
+                    <span>{{formatStatus(tableData[scope.$index].project.project_status)}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="project.project_line_time" label="项目上线时间"></el-table-column>
@@ -45,7 +45,6 @@
 <script type="text/ecmascript-6">
   import api from 'fetch/api';
   import _ from 'lodash';
-  let self='';
   export default {
       data () {
           return{
@@ -82,12 +81,15 @@
         handleRowChange(val) {
             this.project_no=val.project.project_no;
         },
+        formatStatus(value) {
+            return _.result(_.find(this.projectStatus, { 'code_value': value+''}), 'code_name');
+        },
         _getData(current_page,page_size){
           api.GetProjects({
             current_page,
             page_size,
-            channel_name: this.$route.query.channel_name,
-            project_name: this.$route.query.project_title,
+            channel_name: this.$route.query.channel,
+            project_name: this.$route.query.project_name,
             project_status: this.$route.query.project_status
           })
             .then(res => {
@@ -107,14 +109,8 @@
         }
       },
       created(){
-         self=this;
          this._getData(this.current_page,this.page_size)
-      },
-      filters: {
-          formatStatus(value) {
-              return _.result(_.find(self.projectStatus, { 'code_value': value+''}), 'code_name');
-          }
-      },
+      }
   }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">

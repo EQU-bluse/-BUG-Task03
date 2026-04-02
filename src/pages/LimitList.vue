@@ -46,7 +46,7 @@
             <el-table-column
               label="额度调整"
               >
-              <template scope="scope">
+              <template slot-scope="scope">
                 <router-link :to="'/limitDetail/' + scope.row.company_id">管理</router-link>
               </template>
             </el-table-column>

@@ -16,6 +16,7 @@ module.exports = {
     try{
       var current = req.body.current_page || 1;
       var page_size=req.body.page_size||10;
+      var offset = (current - 1) * page_size;
       var con = {
         include: [{
           model: cstBaseSequelize,
@@ -31,7 +32,8 @@ module.exports = {
           where: {}
         }],
         attributes: ['id', 'quotaId', 'company_id', 'available_credit', 'freezen_status'],
-        limit: [(current - 1) * page_size, +page_size],
+        limit: +page_size,
+        offset: offset,
         where: {}
       }
       var codeCondition= {
